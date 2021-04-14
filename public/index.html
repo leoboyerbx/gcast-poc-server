@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,13 +24,19 @@
 <div id="message">SALUT LE S</div>
 
 <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
     'use strict';
+
+    const socket = io()
+
     const context = cast.framework.CastReceiverContext.getInstance();
     context.addCustomMessageListener('urn:x-cast:com.pnk.poccast', function(customEvent) {
-        console.log(customEvent)
-        if(customEvent.data.type == "message"){
-            document.getElementById("message").innerHTML = customEvent.data.text;
+        if(customEvent.data.type === "syncID"){
+            socket.emit('config', {
+                id: customEvent.data.text,
+                type: 'cast'
+            })
         }
     });
     context.start();
