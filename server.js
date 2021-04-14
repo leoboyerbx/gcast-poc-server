@@ -18,7 +18,10 @@ let io = require('socket.io')(server)
 app.use(express.static(__dirname + '/public'))
 
 function bindInGameEvents (socket, room) {
-
+    socket.on('game-data', data => {
+        data.fromType = socket.clientType
+        io.to(room).emit('game-data', data)
+    })
 }
 
 io.sockets.on('connection', socket => {
