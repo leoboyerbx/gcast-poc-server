@@ -14,7 +14,9 @@ let io = require('socket.io')(server)
 
 app.use(express.static(__dirname + '/public'))
 
+function bindInGameEvents (socket, room) {
 
+}
 
 io.sockets.on('connection', (socket) => {
     let room = "default";
@@ -22,7 +24,17 @@ io.sockets.on('connection', (socket) => {
         room = config.id
         socket.join(room)
         socket.clientType = config.type
-        console.log("joined room " + room + " as " + socket.clientType)
+        console.log("A client joined room " + room + " as " + socket.clientType)
+
+        const clientsInRoom = Array.from(io.sockets.adapter.rooms.get(room))
+        const clientTypes = clientsInRoom.map(clientId => {
+            const client = io.sockets.sockets.get(clientId)
+            return client.clientType
+        })
+        bindInGameEvents(socket, room)
+        if (clientTypes.includes('cast') && clientTypes.includes('player')) {
+            io.to(room).emit('ready')
+        }
     })
     .on('disconnect', () => {
     })
