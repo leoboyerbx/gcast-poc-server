@@ -1,8 +1,11 @@
 let fs = require('fs')
 let http = require('http')
+const cors = require('cors')
 
 let express = require('express')
 let app = express()
+
+app.use(cors())
 
 let serverPort = 7554;
 
