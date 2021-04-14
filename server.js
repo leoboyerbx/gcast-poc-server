@@ -21,10 +21,10 @@ function bindInGameEvents (socket, room) {
 
 }
 
-io.sockets.on('connection', (socket) => {
-    let room = "default";
+io.sockets.on('connection', socket => {
     socket.on('config', config => {
-        room = config.id
+        const room = config.id
+        socket.leaveAll()
         socket.join(room)
         socket.clientType = config.type
         console.log("A client joined room " + room + " as " + socket.clientType)
